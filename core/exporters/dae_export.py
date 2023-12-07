@@ -3,6 +3,8 @@ from .base_export import Base_Export
 
 
 class DAE_Export(Base_Export):
+    formats = [".dae"]
+
     def __init__(self, context):
         super().__init__(context, format=".dae")
 

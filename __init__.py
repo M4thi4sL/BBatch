@@ -62,17 +62,7 @@ bpy.types.Scene.export_smoothing = EnumProperty(
     default="OFF",
 )
 
-bpy.types.Scene.export_file_format = EnumProperty(
-    items=[
-        (".obj", ".OBJ", "OBJ format"),
-        (".fbx", ".FBX", "FBX format"),
-        (".stl", ".STL", "STL format"),
-        (".gltf", ".GLTF", "GLTF format"),
-        (".dae", ".DAE", "DAE format"),
-        (".abc", ".ABC", "ABC format"),
-    ],
-    default=".fbx",
-)
+
 bpy.types.Scene.show_options = BoolProperty(default=False)
 
 bpy.types.Scene.export_animations = BoolProperty(

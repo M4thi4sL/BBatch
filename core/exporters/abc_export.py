@@ -1,7 +1,10 @@
 import bpy
 from .base_export import Base_Export
 
+
 class ABC_Export(Base_Export):
+    formats = [".abc"]
+
     def __init__(self, context):
         super().__init__(context, format=".abc")
 

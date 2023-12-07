@@ -3,6 +3,8 @@ from .base_export import Base_Export
 
 
 class FBX_Export(Base_Export):
+    formats = [".fbx"]
+
     def __init__(self, context):
         super().__init__(context, format=".fbx")
 

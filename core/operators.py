@@ -1,14 +1,7 @@
 import bpy
 
 from bpy.types import Operator
-from .exporters import (
-    OBJ_Export,
-    FBX_Export,
-    STL_Export,
-    GLTF_Export,
-    ABC_Export,
-    DAE_Export,
-)
+from .exporters import *
 
 
 class BBatch_OT_ExportOperator(Operator):
@@ -40,7 +33,7 @@ class BBatch_OT_ExportOperator(Operator):
 
         exporter.do_export()
 
-        self.report({"INFO"}, "Exported to " + context.scene.export_folder)
+        self.report({"INFO"}, "Exported to: " + context.scene.export_folder)
         return {"FINISHED"}
 
 

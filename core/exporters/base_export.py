@@ -5,6 +5,8 @@ from ..utils import get_object_loc, set_object_to_loc, get_children
 
 
 class Base_Export:
+    formats = []
+
     def __init__(self, context, format):
         self.__context = context
         self.__export_folder = context.scene.export_folder

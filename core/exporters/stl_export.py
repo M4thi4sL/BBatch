@@ -4,6 +4,8 @@ from .base_export import Base_Export
 
 
 class STL_Export(Base_Export):
+    formats = [".stl"]
+
     def __init__(self, context):
         super().__init__(context, format=".stl")
 
