@@ -12,22 +12,85 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 bl_info = {
-    "name" : "BBatch",
-    "author" : "M4thi4sL",
-    "description" : "",
-    "blender" : (2, 80, 0),
-    "version" : (0, 0, 1),
-    "location" : "",
-    "warning" : "",
-    "category" : "Generic"
+    "name": "BBatch",
+    "author": "M4thi4sL",
+    "description": "export assets to a specified folder",
+    "blender": (2, 80, 0),
+    "version": (1, 0, 0),
+    "location": "BBatch panel",
+    "warning": "",
+    "category": "Import-Export",
 }
 
 from . import auto_load
 
+import bpy
+from bpy.props import StringProperty, BoolProperty, EnumProperty
+
+from .core.panel import *
+from .core.operators import *
+
 auto_load.init()
+
+bpy.types.Scene.export_folder = StringProperty(
+    name="Export folder",
+    subtype="DIR_PATH",
+    description="Directory to export the fbx files into",
+    default=".\\",
+)
+
+bpy.types.Scene.center_transform = BoolProperty(
+    name="Center transform",
+    description="Set the pivot point of the object to the center",
+    default=True,
+)
+
+bpy.types.Scene.apply_transform = BoolProperty(
+    name="Apply transform",
+    description="Applies scale and transform (Experimental)",
+    default=True,
+)
+
+bpy.types.Scene.export_smoothing = EnumProperty(
+    name="Smoothing",
+    description="Defines the export smoothing information",
+    items=(
+        ("EDGE", "Edge", "Write edge smoothing", 0),
+        ("FACE", "Face", "Write face smoothing", 1),
+        ("OFF", "Normals Only", "Write normals only", 2),
+    ),
+    default="OFF",
+)
+
+bpy.types.Scene.export_file_format = EnumProperty(
+    items=[
+        (".obj", ".OBJ", "OBJ format"),
+        (".fbx", ".FBX", "FBX format"),
+        (".stl", ".STL", "STL format"),
+        (".gltf", ".GLTF", "GLTF format"),
+        (".dae", ".DAE", "DAE format"),
+        (".abc", ".ABC", "ABC format"),
+    ],
+    default=".fbx",
+)
+bpy.types.Scene.show_options = BoolProperty(default=False)
+
+bpy.types.Scene.export_animations = BoolProperty(
+    name="Export Rig & Animations",
+    description="Export rig and animations",
+    default=False,
+)
+
+bpy.types.Scene.one_material_ID = BoolProperty(
+    name="One material ID",
+    description="Export just one material per object",
+    default=False,
+)
+
 
 def register():
     auto_load.register()
+
 
 def unregister():
     auto_load.unregister()
