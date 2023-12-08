@@ -1,7 +1,7 @@
 # BBatch - Blender Batch Exporter
  Blender addon for bulk exporting of assets.
  
- ![BBatch_Exporter](https://github.com/MathiasLArt/BBatch/assets/59111832/375e1e54-ef1a-4793-84e6-b281a010bb20)
+![BBatch_Exporter](https://github.com/MathiasLArt/BBatch/assets/59111832/f0d1b418-80e1-46a6-b61c-27b87ab1f667)
 
 # Features
 * export 1 file per selected objects
