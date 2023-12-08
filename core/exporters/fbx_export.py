@@ -21,7 +21,6 @@ class FBX_Export(Base_Export):
             bake_anim_use_all_bones=self._Base_Export__export_animations,
             bake_anim_use_all_actions=self._Base_Export__export_animations,
             use_armature_deform_only=True,
-            bake_space_transform=self._Base_Export__apply_transform,
             mesh_smooth_type=self._Base_Export__context.scene.export_smoothing,
             add_leaf_bones=False,
             path_mode="ABSOLUTE",
