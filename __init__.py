@@ -16,7 +16,7 @@ bl_info = {
     "author": "M4thi4sL",
     "description": "export assets to a specified folder",
     "blender": (2, 80, 0),
-    "version": (1, 0, 0),
+    "version": (1, 0, 2),
     "location": "BBatch panel",
     "warning": "",
     "category": "Import-Export",
