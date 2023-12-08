@@ -39,7 +39,6 @@ class BBatch_PT_MainPanel(Panel):
             box = layout.box()
             row = box.row()
             row.prop(context.scene, "center_transform", text="Center Transform")
-            row.prop(context.scene, "apply_transform", text="Apply Transform")
             row.prop(context.scene, "one_material_ID")
             row = box.row()
             row.label(text="Smoothing:")

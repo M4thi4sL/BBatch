@@ -45,12 +45,6 @@ bpy.types.Scene.center_transform = BoolProperty(
     default=True,
 )
 
-bpy.types.Scene.apply_transform = BoolProperty(
-    name="Apply transform",
-    description="Applies scale and transform (Experimental)",
-    default=True,
-)
-
 bpy.types.Scene.export_smoothing = EnumProperty(
     name="Smoothing",
     description="Defines the export smoothing information",

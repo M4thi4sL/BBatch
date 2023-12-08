@@ -17,7 +17,6 @@ class Base_Export:
             )
 
         self.__center_transform = context.scene.center_transform
-        self.__apply_transform = context.scene.apply_transform
         self.__one_material_id = context.scene.one_material_ID
         self.__export_objects = context.selected_objects
         self.__export_animations = context.scene.export_animations
