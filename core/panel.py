@@ -3,7 +3,7 @@ from bpy.types import Panel
 from bpy.props import BoolProperty
 
 
-class BBatch_PT_MainPanel(Panel):
+class BBATCH_PT_MainPanel(Panel):
     bl_label = "BBatch Exporter"
     bl_idname = "bbatch_PT_main_panel"
     bl_space_type = "VIEW_3D"

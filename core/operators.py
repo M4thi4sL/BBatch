@@ -4,7 +4,7 @@ from bpy.types import Operator
 from .exporters import *
 
 
-class BBatch_OT_ExportOperator(Operator):
+class BBATCH_OT_ExportOperator(Operator):
     bl_idname = "object.bex_ot_operator"
     bl_label = "Batch Export"
     bl_description = "export the selected objects"
@@ -37,7 +37,7 @@ class BBatch_OT_ExportOperator(Operator):
         return {"FINISHED"}
 
 
-class BBatch_OT_ToggleOptionsOperator(Operator):
+class BBATCH_OT_ToggleOptionsOperator(Operator):
     bl_idname = "object.bex_ot_toggle_options"
     bl_label = "Toggle Options"
 
