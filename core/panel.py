@@ -1,18 +1,15 @@
-import bpy
 from bpy.types import Panel
-from bpy.props import BoolProperty
 
 
 class BBATCH_PT_MainPanel(Panel):
     bl_label = "BBatch Exporter"
-    bl_idname = "bbatch_PT_main_panel"
+    bl_idname = "BBATCH_PT_MainPanel"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = "BBatch"
 
     def draw(self, context):
         layout = self.layout
-        scene = context.scene
 
         # Export folder settings
         layout.label(text="Folder:")
@@ -29,7 +26,7 @@ class BBATCH_PT_MainPanel(Panel):
         # Options toggle button
         row = layout.row(align=True)
         row.operator(
-            "object.bex_ot_toggle_options",
+            "object.bbatch_ot_toggle_options",
             text="Advanced Options",
             icon="TRIA_DOWN" if context.scene.show_options else "TRIA_RIGHT",
         )
@@ -45,4 +42,4 @@ class BBATCH_PT_MainPanel(Panel):
             row.prop(context.scene, "export_smoothing", text="")
 
         # Export button
-        layout.operator("object.bex_ot_operator", text="Export")
+        layout.operator("object.bbatch_ot_operator", text="Export")

@@ -5,7 +5,7 @@ from .exporters import *
 
 
 class BBATCH_OT_ExportOperator(Operator):
-    bl_idname = "object.bex_ot_operator"
+    bl_idname = "object.bbatch_ot_operator"
     bl_label = "Batch Export"
     bl_description = "export the selected objects"
     bl_options = {"REGISTER"}
@@ -26,9 +26,7 @@ class BBATCH_OT_ExportOperator(Operator):
         elif export_format == ".abc":
             exporter = ABC_Export(context)
         else:
-            self.report(
-                {"ERROR"}, "Unsupported export format: {}".format(export_format)
-            )
+            self.report({"ERROR"}, "Unsupported export format: {}".format(export_format))
             return {"CANCELLED"}
 
         exporter.do_export()
@@ -38,7 +36,7 @@ class BBATCH_OT_ExportOperator(Operator):
 
 
 class BBATCH_OT_ToggleOptionsOperator(Operator):
-    bl_idname = "object.bex_ot_toggle_options"
+    bl_idname = "object.bbatch_ot_toggle_options"
     bl_label = "Toggle Options"
 
     def execute(self, context):

@@ -1,6 +1,7 @@
 import bpy
 import bmesh
 import os
+import re
 from ..utils import get_object_loc, set_object_to_loc, get_children
 
 
@@ -12,9 +13,7 @@ class Base_Export:
         self.__export_folder = context.scene.export_folder
 
         if self.__export_folder.startswith("//"):
-            self.__export_folder = os.path.abspath(
-                bpy.path.abspath(context.scene.export_folder)
-            )
+            self.__export_folder = os.path.abspath(bpy.path.abspath(context.scene.export_folder))
 
         self.__center_transform = context.scene.center_transform
         self.__one_material_id = context.scene.one_material_ID
@@ -23,6 +22,7 @@ class Base_Export:
         self.__mat_faces = {}
         self.__materials = []
         self.__format = format
+        self.original_names = {}  # Store original names for restoration
 
     def do_center(self, obj):
         if self.__center_transform:
@@ -83,8 +83,67 @@ class Base_Export:
 
         bpy.ops.object.mode_set(mode="OBJECT")
 
+    def rename_non_export_objects_with_prefix(self, prefix="%BBatch%_"):
+        # Gather all objects in the scene
+        all_objects = bpy.data.objects
+
+        # Gather all export objects and their children to exclude from prefix renaming
+        export_objects_and_children = list(self.__export_objects)
+        for obj in self.__export_objects:
+            export_objects_and_children.extend(get_children(obj))
+
+        # Loop over all objects and add prefix to their names if not an export object or its child
+        for obj in all_objects:
+            if obj not in export_objects_and_children:
+                self.original_names[obj] = obj.name  # Store original name
+                obj.name = f"{prefix}{obj.name}"
+
+        print("Added prefix to all non-export object names successfully.")
+
+    def strip_suffix_from_export_objects(self):
+        # Gather export objects and their children
+        all_export_objects = list(self.__export_objects)
+
+        for obj in self.__export_objects:
+            all_export_objects.extend(get_children(obj))
+
+        # Iterate through the combined list of objects
+        for obj in all_export_objects:
+            # Store the original name to restore later
+            self.original_names[obj] = obj.name
+
+            # Check if the object has a .xxx suffix and strip it
+            if re.match(r".*\.\d{3}$", obj.name):
+                base_name = obj.name.rsplit(".", 1)[0]  # Strip the .xxx suffix
+                obj.name = base_name
+
+        print("Stripped .xxx suffix from all export objects successfully.")
+
+    def restore_original_names(self):
+        # First, restore the names of the exported objects and their children
+        export_objects_and_children = list(self.__export_objects)
+        for obj in self.__export_objects:
+            export_objects_and_children.extend(get_children(obj))
+
+        for obj in export_objects_and_children:
+            if obj in self.original_names:
+                obj.name = self.original_names[obj]
+
+        # Then, restore the names of all other objects
+        for obj, original_name in self.original_names.items():
+            if obj not in export_objects_and_children:
+                obj.name = original_name
+
+        print("Restored all original object names successfully.")
+
     def do_export(self):
         bpy.ops.object.mode_set(mode="OBJECT")
+
+        # Step 1: Rename all non-export objects with the prefix
+        self.rename_non_export_objects_with_prefix()
+
+        # Step 2: Rename export objects by stripping .xxx suffix
+        self.strip_suffix_from_export_objects()
 
         for obj in self.__export_objects:
             bpy.ops.object.select_all(action="DESELECT")
@@ -113,6 +172,9 @@ class Base_Export:
 
             if old_pos is not None:
                 set_object_to_loc(obj, old_pos)
+
+        # Step 3: Restore all original names after exporting
+        self.restore_original_names()
 
     def export(self, obj, materials_removed):
         raise NotImplementedError("Subclasses must implement the export method")
