@@ -16,6 +16,7 @@ def get_children(obj):
     for ob in bpy.data.objects:
         if ob.parent == obj:
             children.append(ob)
+            children.extend(get_children(ob))
     return children
 
 

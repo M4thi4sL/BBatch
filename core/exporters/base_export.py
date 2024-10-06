@@ -24,6 +24,11 @@ class Base_Export:
         self.__format = format
         self.original_names = {}  # Store original names for restoration
 
+    def store_original_names(self):
+        # Store the original names of all objects
+        for obj in bpy.data.objects:
+            self.original_names[obj] = obj.name
+
     def do_center(self, obj):
         if self.__center_transform:
             loc = get_object_loc(obj)
@@ -84,80 +89,49 @@ class Base_Export:
         bpy.ops.object.mode_set(mode="OBJECT")
 
     def rename_non_export_objects_with_prefix(self, prefix="%BBatch%_"):
-        # Gather all objects in the scene
-        all_objects = bpy.data.objects
-
-        # Gather all export objects and their children to exclude from prefix renaming
-        export_objects_and_children = list(self.__export_objects)
-        for obj in self.__export_objects:
-            export_objects_and_children.extend(get_children(obj))
-
-        # Loop over all objects and add prefix to their names if not an export object or its child
-        for obj in all_objects:
-            if obj not in export_objects_and_children:
-                self.original_names[obj] = obj.name  # Store original name
+        # Rename all non-export objects with prefix
+        for obj in bpy.data.objects:
+            if obj not in self.current_export_objects:
                 obj.name = f"{prefix}{obj.name}"
 
-        print("Added prefix to all non-export object names successfully.")
-
-    def strip_suffix_from_export_objects(self):
-        # Gather export objects and their children
-        all_export_objects = list(self.__export_objects)
-
-        for obj in self.__export_objects:
-            all_export_objects.extend(get_children(obj))
-
-        # Iterate through the combined list of objects
-        for obj in all_export_objects:
-            # Store the original name to restore later
-            self.original_names[obj] = obj.name
-
-            # Check if the object has a .xxx suffix and strip it
-            if re.match(r".*\.\d{3}$", obj.name):
-                base_name = obj.name.rsplit(".", 1)[0]  # Strip the .xxx suffix
-                obj.name = base_name
-
-        print("Stripped .xxx suffix from all export objects successfully.")
+    def strip_suffix_and_rename(self, obj):
+        # Strip the .xxx suffix if present
+        if re.match(r".*\.\d{3}$", obj.name):
+            base_name = obj.name.rsplit(".", 1)[0]  # Strip the .xxx suffix
+            obj.name = base_name
 
     def restore_original_names(self):
-        # First, restore the names of the exported objects and their children
-        export_objects_and_children = list(self.__export_objects)
-        for obj in self.__export_objects:
-            export_objects_and_children.extend(get_children(obj))
-
-        for obj in export_objects_and_children:
-            if obj in self.original_names:
-                obj.name = self.original_names[obj]
-
-        # Then, restore the names of all other objects
+        # Restore all original names from stored dictionary
         for obj, original_name in self.original_names.items():
-            if obj not in export_objects_and_children:
-                obj.name = original_name
-
-        print("Restored all original object names successfully.")
+            obj.name = original_name
 
     def do_export(self):
         bpy.ops.object.mode_set(mode="OBJECT")
 
-        # Step 1: Rename all non-export objects with the prefix
-        self.rename_non_export_objects_with_prefix()
+        # Store the original names of all objects before any modifications
+        self.store_original_names()
 
-        # Step 2: Rename export objects by stripping .xxx suffix
-        self.strip_suffix_from_export_objects()
+        for root_obj in self.__export_objects:
+            # Gather the export object and its children for processing
+            self.current_export_objects = [root_obj] + get_children(root_obj)
 
-        for obj in self.__export_objects:
+            # Step 1: Rename all non-export objects with the prefix
+            self.rename_non_export_objects_with_prefix()
+
+            # Step 2: Rename the export object and its children (strip .xxx suffix)
+            for export_obj in self.current_export_objects:
+                self.strip_suffix_and_rename(export_obj)
+
+            # Deselect all and select the export object and its children
             bpy.ops.object.select_all(action="DESELECT")
-            obj.select_set(state=True)
+            for export_obj in self.current_export_objects:
+                export_obj.select_set(state=True)
 
             # Center selected object
-            old_pos = self.do_center(obj)
-
-            # Select children if exist
-            for child in get_children(obj):
-                child.select_set(state=True)
+            old_pos = self.do_center(root_obj)
 
             # Remove materials except the last one
-            materials_removed = self.remove_materials(obj)
+            materials_removed = self.remove_materials(root_obj)
 
             ex_object_types = {"MESH"}
 
@@ -165,16 +139,18 @@ class Base_Export:
                 ex_object_types.add("ARMATURE")
 
             # Export the selected object
-            self.export(obj, materials_removed)
+            self.export(root_obj, materials_removed)
 
+            # Restore the materials if they were altered
             if materials_removed:
-                self.restore_materials(obj)
+                self.restore_materials(root_obj)
 
+            # Restore the original location
             if old_pos is not None:
-                set_object_to_loc(obj, old_pos)
+                set_object_to_loc(root_obj, old_pos)
 
-        # Step 3: Restore all original names after exporting
-        self.restore_original_names()
+            # Step 3: Restore all original names after exporting
+            self.restore_original_names()
 
     def export(self, obj, materials_removed):
         raise NotImplementedError("Subclasses must implement the export method")
