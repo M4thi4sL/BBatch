@@ -6,8 +6,12 @@
 # Features
 * export 1 file per selected objects
 * supports multiple formats (.fbx, .obj, .stl, .gltf, .dae, .abc)
+  
+   ![BBatch_SupportedFormats](https://github.com/MathiasLArt/BBatch/assets/59111832/2d7a4a57-2a67-48db-bcc0-a797d3d8d350)
 
- ![BBatch_SupportedFormats](https://github.com/MathiasLArt/BBatch/assets/59111832/2d7a4a57-2a67-48db-bcc0-a797d3d8d350)
+* support exporting empties
+* non destructively strips .xxx suffixes upon exporting for cleaner names in third party softwares
+
   
 * advanced option to set smoothing type
 * advanced option to set pivot location (usefull for export to game-engine as it places the object at world origins before exporting)
