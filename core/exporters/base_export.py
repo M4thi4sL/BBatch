@@ -2,6 +2,7 @@ import bpy
 import bmesh
 import os
 import re
+import subprocess
 from ..utils import get_object_loc, set_object_to_loc, get_children
 
 
@@ -27,6 +28,27 @@ class Base_Export:
         self.__materials = []
         self.__format = format
         self.original_names = {}  # Store original names for restoration
+
+    def file_exists(self, filepath):
+        """Check if the file already exists in the export folder."""
+        return os.path.isfile(filepath)
+
+    def is_file_checked_in(self, filepath):
+        """Check if the file is checked into Perforce."""
+        try:
+            result = subprocess.run(["p4", "fstat", filepath], capture_output=True, text=True)
+            return result.returncode == 0 and "depotFile" in result.stdout
+        except Exception as e:
+            print(f"Error checking file status in Perforce: {e}")
+            return False
+
+    def checkout_file(self, filepath):
+        """Check out the file in Perforce."""
+        result = subprocess.run(["p4", "edit", filepath], capture_output=True, text=True)
+        if result.returncode == 0:
+            print(f"Checked out: {filepath}")
+        else:
+            print(f"Error checking out file: {result.stderr}")
 
     def store_original_names(self):
         # Store the original names of all objects
@@ -111,49 +133,42 @@ class Base_Export:
 
     def do_export(self):
         bpy.ops.object.mode_set(mode="OBJECT")
-
-        # Store the original names of all objects before any modifications
         self.store_original_names()
 
         for root_obj in self.__export_objects:
-            # Gather the export object and its children for processing
             self.current_export_objects = [root_obj] + get_children(root_obj)
-
-            # Step 1: Rename all non-export objects with the prefix
             self.rename_non_export_objects_with_prefix()
 
-            # Step 2: Rename the export object and its children (strip .xxx suffix)
             for export_obj in self.current_export_objects:
                 self.strip_suffix_and_rename(export_obj)
 
-            # Deselect all and select the export object and its children
             bpy.ops.object.select_all(action="DESELECT")
             for export_obj in self.current_export_objects:
                 export_obj.select_set(state=True)
 
-            # Center selected object
-            old_pos = self.do_center(root_obj)
+            # Check export filepath
+            export_filename = f"{root_obj.name}.fbx"  # Replace with your file extension as needed
+            export_filepath = os.path.join(self.__export_folder, export_filename)
 
-            # Remove materials except the last one
+            if self.file_exists(export_filepath):
+                if self.is_file_checked_in(export_filepath):
+                    self.checkout_file(export_filepath)  # Check out the file
+
+            old_pos = self.do_center(root_obj)
             materials_removed = self.remove_materials(root_obj)
 
             ex_object_types = {"MESH"}
-
             if self.__export_animations:
                 ex_object_types.add("ARMATURE")
 
-            # Export the selected object
             self.export(root_obj, materials_removed)
 
-            # Restore the materials if they were altered
             if materials_removed:
                 self.restore_materials(root_obj)
 
-            # Restore the original location
             if old_pos is not None:
                 set_object_to_loc(root_obj, old_pos)
 
-            # Step 3: Restore all original names after exporting
             self.restore_original_names()
 
     def export(self, obj, materials_removed):
