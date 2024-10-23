@@ -2,6 +2,7 @@
  Blender addon for bulk exporting of assets.
  
 ![BBatch_Exporter](https://github.com/MathiasLArt/BBatch/assets/59111832/f0d1b418-80e1-46a6-b61c-27b87ab1f667)
+![image](https://github.com/user-attachments/assets/a80b1925-37a3-4e01-85a7-1e60078cddc2)
 
 # Features
 * export 1 file per selected objects
