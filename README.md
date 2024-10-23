@@ -25,21 +25,25 @@
 6. check 'enable plugin'
 
 # Version control
-Currently I am supporting perforce (p4v). The addon will auto-detect p4 setting if they have been setup correctly.
+Currently I am supporting perforce (p4v). As this is the version control I, as well as a majority of studios use.
+The addon will auto-detect p4 setting if they have been setup correctly.
 
-* p4 set P4CONFIG=p4config
+```
+p4 set P4CONFIG=p4config
+```
 
 if that didnt work, then provide the absolute path to the p4config file.
-If not, add them manually to the preferences of the add-on.
+If after that the addon stil doesn't pick them up, add them manually to the preferences of the add-on.
 
 p4Config example:
-
+```
 P4PORT=ssl:xxx.xx.xx.xxx:1666
-
 P4USER=M3thi4sL
-
 P4CLIENT=M4thi4sL_Blender
+```
 
+# Feature requests
+If you would like to see other features added to BBatch, please let me know by opening an issue or providing a pull request. 
 
 # Usage
 1) select desired objects
