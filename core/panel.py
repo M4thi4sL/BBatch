@@ -11,16 +11,19 @@ class BBATCH_PT_MainPanel(Panel):
     def draw(self, context):
         layout = self.layout
 
+        # Access the panel properties
+        props = context.scene.panel_properties
+
         # Export folder settings
-        layout.label(text="Folder:")
+        layout.label(text="Export Folder", icon="FILE_FOLDER")
 
         box = layout.box()
         row = box.row()
-        row.prop(context.scene, "export_folder", text="")
+        row.prop(props, "export_folder", text="")
 
         # File format dropdown
         row = layout.row()
-        row.label(text="File Format:")
+        row.label(text="File Format:", icon="FILE_BLEND")
         row.prop(context.scene, "export_file_format", text="")
 
         # Options toggle button
@@ -28,18 +31,20 @@ class BBATCH_PT_MainPanel(Panel):
         row.operator(
             "object.bbatch_ot_toggle_options",
             text="Advanced Options",
-            icon="TRIA_DOWN" if context.scene.show_options else "TRIA_RIGHT",
+            icon="TRIA_DOWN" if props.show_options else "TRIA_RIGHT",
         )
 
-        # Options box
-        if context.scene.show_options:
+        # Advanced options
+        if props.show_options:
             box = layout.box()
+
+            box.prop(props, "center_transform", text="Center Transform", icon="EMPTY_ARROWS")
+            box.prop(props, "one_material_ID", text="Single Material ID", icon="MATERIAL")
+
             row = box.row()
-            row.prop(context.scene, "center_transform", text="Center Transform")
-            row.prop(context.scene, "one_material_ID")
-            row = box.row()
-            row.label(text="Smoothing:")
-            row.prop(context.scene, "export_smoothing", text="")
+            row.label(text="Smoothing:", icon="MOD_SMOOTH")
+            row.prop(props, "export_smoothing", text="")
 
         # Export button
-        layout.operator("object.bbatch_ot_operator", text="Export")
+        layout.separator()
+        layout.operator("object.bbatch_ot_operator", text="Export", icon="EXPORT")

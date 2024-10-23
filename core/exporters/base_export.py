@@ -9,16 +9,20 @@ class Base_Export:
     formats = []
 
     def __init__(self, context, format):
+
+        props = context.scene.panel_properties
+
         self.__context = context
-        self.__export_folder = context.scene.export_folder
+        self.__export_folder = props.export_folder
 
         if self.__export_folder.startswith("//"):
-            self.__export_folder = os.path.abspath(bpy.path.abspath(context.scene.export_folder))
+            self.__export_folder = os.path.abspath(bpy.path.abspath(props.export_folder))
 
-        self.__center_transform = context.scene.center_transform
-        self.__one_material_id = context.scene.one_material_ID
+        self.__center_transform = props.center_transform
+        self.__one_material_id = props.one_material_ID
         self.__export_objects = context.selected_objects
-        self.__export_animations = context.scene.export_animations
+        self.__export_animations = props.export_animations
+        self.__export_smoothing = props.export_smoothing
         self.__mat_faces = {}
         self.__materials = []
         self.__format = format
