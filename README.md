@@ -33,8 +33,11 @@ if that didnt work, then provide the absolute path to the p4config file.
 If not, add them manually to the preferences of the add-on.
 
 p4Config example:
+
 P4PORT=ssl:xxx.xx.xx.xxx:1666
+
 P4USER=M3thi4sL
+
 P4CLIENT=M4thi4sL_Blender
 
 
