@@ -24,6 +24,20 @@
 5. select the downloaded .zip file
 6. check 'enable plugin'
 
+# Version control
+Currently I am supporting perforce (p4v). The addon will auto-detect p4 setting if they have been setup correctly.
+
+* p4 set P4CONFIG=p4config
+
+if that didnt work, then provide the absolute path to the p4config file.
+If not, add them manually to the preferences of the add-on.
+
+p4Config example:
+P4PORT=ssl:xxx.xx.xx.xxx:1666
+P4USER=M3thi4sL
+P4CLIENT=M4thi4sL_Blender
+
+
 # Usage
 1) select desired objects
 2) set options
