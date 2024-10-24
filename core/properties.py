@@ -14,8 +14,8 @@ class BBatch_PanelProperties(PropertyGroup):
     )
 
     center_transform: BoolProperty(
-        name="Center transform",
-        description="Set the pivot point of the object to the center",
+        name="Center Transform",
+        description="Move the object back to world origins (0,0,0) before exporting it.",
         default=True,
     )
 
